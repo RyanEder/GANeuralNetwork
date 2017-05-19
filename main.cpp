@@ -23,7 +23,7 @@ int main() {
     pool.feed_inputs(inputs);
     pool.compute_pool();
 
-    for (int i = 0; i < 1000; i++) {
+    for (uint32_t i = 0; i < 1000; i++) {
         pool.compute_pool();
     }
     //pool.enumerate_pool();

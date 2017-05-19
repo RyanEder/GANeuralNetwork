@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <vector>
 #include <assert.h>
 #include <stdlib.h>
-#include <random>
 #include "neural_map.h"
 
 namespace nn {
@@ -79,7 +76,7 @@ public:
 
     void init() {
         _node_count = _config._node_count;
-        for (int i = 0; i < _node_count; i++) {
+        for (uint32_t i = 0; i < _node_count; i++) {
             neural_node *node = new neural_node(_gen, _config._node_configs[i]);
             _nodes.push_back(node);
         }
@@ -99,14 +96,14 @@ public:
 
     std::vector<neural_node *> &get_nodes() { return _nodes; }
 
-    int node_count() { return _config._node_count; }
+    uint32_t node_count() { return _config._node_count; }
 
-    void enumerate(int show_nodes);
+    void enumerate(uint32_t show_nodes);
 
     ~neural_layer() { delete_nodes(); }
 
 private:
-    int                         _node_count = 0;
+    uint32_t                    _node_count = 0;
     std::mt19937               &_gen;
     std::vector<neural_node *>  _nodes;
     layer_config               &_config;
@@ -123,7 +120,7 @@ public:
 
     void init() {
         _layer_count = _config._layer_count;
-        for (int i = 0; i < _layer_count; i++) {
+        for (uint32_t i = 0; i < _layer_count; i++) {
             neural_layer *layer = new neural_layer(_gen, _config._layer_configs[i]);
             layer->init();
             _layers.push_back(layer);
@@ -162,7 +159,7 @@ public:
     void describe() { _config.describe(); }
 
 private:
-    int                              _layer_count = 0;
+    uint32_t                        _layer_count = 0;
     std::mt19937                   &_gen;
     std::vector<neural_layer *>     _layers;
     structure_config                _config;

@@ -12,7 +12,7 @@ neural_connection::compute_link_value() {
 
 void 
 neural_node::connect_back_nodes(neural_layer *l) {
-    int index = 0;
+    uint32_t index = 0;
     for (auto &node : l->get_nodes()) {
         neural_connection *connection = new neural_connection();
         connection->update_back_link(node);
@@ -34,8 +34,8 @@ void
 neural_structure::fill_input_neurons(std::vector<double> &inputs) {
     assert((size_t)inputs.size() == (size_t)_layers[0]->node_count());
     std::vector<neural_node *> &input_nodes = _layers[0]->get_nodes();
-    int input_size = inputs.size();
-    for (int i = 0; i < input_size; i++) {
+    uint32_t input_size = inputs.size();
+    for (uint32_t i = 0; i < input_size; i++) {
         input_nodes[i]->update_value(inputs[i]);
     }
 }
@@ -43,7 +43,7 @@ neural_structure::fill_input_neurons(std::vector<double> &inputs) {
 
 void
 neural_structure::compute_network() {
-    for (int layer_index = 1; layer_index < _layer_count; layer_index++) {
+    for (uint32_t layer_index = 1; layer_index < _layer_count; layer_index++) {
         std::vector<neural_node *> &nodes = _layers[layer_index]->get_nodes();
         for (auto &node : nodes) {
             node->compute();
@@ -55,10 +55,10 @@ neural_structure::compute_network() {
 
 // Enumerate
 void
-neural_layer::enumerate(int show_nodes = false) {
+neural_layer::enumerate(uint32_t show_nodes = false) {
     for (auto &n : _nodes) {
         if (show_nodes)
-            printf("(%x)%.2f ", (unsigned int)n, n->value());
+            printf("(%x)%.2f ", *(uint32_t*)&n, n->value());
         else
             printf("%.2f ", n->value());
     }
@@ -67,9 +67,9 @@ neural_layer::enumerate(int show_nodes = false) {
 
 void
 neural_structure::enumerate() {
-    int i = 0;
+    uint32_t i = 0;
     for (auto &l : _layers) {
-        printf("Layer %d (%x): ", i++, (unsigned int)l);
+        printf("Layer %d (%x): ", i++, *(uint32_t*)&l);
         l->enumerate();
     }
     printf("\n");
