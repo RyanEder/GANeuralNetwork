@@ -14,7 +14,7 @@ public:
     void update_back_link(neural_node *node) { _back_link = node; }
 
     void update_weight_and_sigmoid(double weight) {
-        _weight = (weight/(1+abs(weight)));
+        _weight = (weight/(1+std::abs(weight)));
     }
 
     double compute_link_value();
@@ -41,7 +41,7 @@ public:
     double value() { return _value; }
 
     void flatten_and_converge() {
-        _value = (_value/(1+abs(_value))); // Apply Sigmoid.
+        _value = (_value/(1+std::abs(_value))); // Apply Sigmoid.
         if (_value > _activation_threshold) {
             _value = 1;
         }
