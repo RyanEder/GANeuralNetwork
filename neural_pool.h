@@ -1,3 +1,4 @@
+#pragma once
 #include <unordered_map>
 #include <ctime>
 #include <thread>
@@ -27,8 +28,8 @@ public:
         _gen.seed(std::rand());
         for (uint32_t i = 0; i < _size; i++) {
             structure_config config(_gen);
-            config._input_neuron_count = 5;
-            config._output_neuron_count = 3;
+            config.set_input_neuron_count(5);
+            config.set_output_neuron_count(3);
             config.random();
             //config.describe();
             neural_structure *s = new neural_structure(_gen, config);
@@ -69,8 +70,9 @@ public:
     void compute_pool() { 
         //for (auto &s : _structures) {
         //    s->compute_network();
+        //    printf("Computing network\n");
         //}
-        _workers_finished = 0;
+        _workers_finished = 0; // Signal to start.
         wait_for_workers();
     }
 
@@ -91,15 +93,19 @@ public:
 
     void worker_thread(uint32_t i) {
         uint32_t mask = 1 << i;
-        _workers_finished |= mask;
+        _workers_finished |= mask; // Mark self started.
         while (!_stop_threads) {
-            while (_workers_finished & mask) SLEEP(10);
+            while (_workers_finished & mask) SLEEP(10); // Wait for start signal when workers_finished goes to 0.
             if (_stop_threads) return;
             for (auto &s : _worker_data[i]) {
                 s->compute_network();
             }
             _workers_finished |= mask;
         }
+    }
+
+    std::vector<neural_structure *> &get_structures() {
+        return _structures;
     }
 
     ~neural_pool() {

@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <vector>
 #include "neural_pool.h"
+#include "fitness.h"
 
 int main() {
     printf("Starting Neural Net.\n");
-    nn::neural_pool pool(1);
+    nn::neural_pool pool(10);
 
     std::vector<double> inputs;
     inputs.push_back(0.04);
@@ -23,10 +24,14 @@ int main() {
     pool.feed_inputs(inputs);
     pool.compute_pool();
 
-    for (uint32_t i = 0; i < 1000; i++) {
-        pool.compute_pool();
-    }
+    //for (uint32_t i = 0; i < 1000; i++) {
+    //    pool.compute_pool();
+    //}
+
     //pool.enumerate_pool();
+
+    nn::fitness_measure fitness(pool);
+    fitness.evaluate_fitness();
     
     printf("Complete\n");
     return 0;

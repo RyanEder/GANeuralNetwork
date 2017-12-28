@@ -1,3 +1,4 @@
+#pragma once
 #include <assert.h>
 #include <stdlib.h>
 #include "neural_map.h"
@@ -119,9 +120,9 @@ public:
           _config(config) {}
 
     void init() {
-        _layer_count = _config._layer_count;
+        _layer_count = _config.get_layer_count();
         for (uint32_t i = 0; i < _layer_count; i++) {
-            neural_layer *layer = new neural_layer(_gen, _config._layer_configs[i]);
+            neural_layer *layer = new neural_layer(_gen, _config.get_layer_configs()[i]);
             layer->init();
             _layers.push_back(layer);
         }
@@ -144,6 +145,7 @@ public:
         for (auto &l : _layers) {
             delete l;
         }
+        _layers.clear();
     }
 
     void fill_input_neurons(std::vector<double> &inputs);
@@ -152,11 +154,20 @@ public:
 
     neural_layer *get_input_layer() { return _layers[0]; }
 
+    neural_layer *get_output_layer() { return _layers[_layer_count - 1]; }
+
     void enumerate();
 
     ~neural_structure() { delete_layers(); }
 
     void describe() { _config.describe(); }
+
+    void mutate() {
+        if (_config.mutate()) {
+            delete_layers();
+            init();
+        }
+    }
 
 private:
     uint32_t                        _layer_count = 0;
